@@ -56,11 +56,7 @@
               {% if is_granted('ROLE_VERIFY') %}
                 {% if oneTime == true %}
                   {% set oneTime = false %}
-<<<<<<< HEAD
-                  <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != 'admin@admin.com' ? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
-=======
-                  <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != 'admin@admin.com'? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
->>>>>>> 63cceecb89edc8aa5eae5f7edcfc278fe8dfeeb5
+                  <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != adminEmail ? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
                     booking
                   </button>  
                 {% endif %}

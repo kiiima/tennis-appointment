@@ -9,19 +9,28 @@
     {% endfor %}
 
     <div class="flex flex-col justify-center items-center">
-        <div class="bg-lime-300 p-10 rounded-md shadow-xl shadow-grey-500/50 flex flex-col justify-center items-center">
-            <h1 class="text-lg font-bold mb-7">Register</h1>
-
-            {{ form_errors(registrationForm , {'attr' : {'class' : 'w-1/2 my-2 text-sm'} }) }}
+        <div class="bg-lime-300 p-10 rounded-md shadow-xl shadow-grey-500/50 w-1/2">
+            <h1 class="text-2xl font-bold mb-7">Register</h1>
+            {% for message in app.flashes('success') %}
+            <div class="itali text-sm border border-2 border-amber-700 p-2 bg-amber-200 opacity-60 rounded-md mt-3 text-amber-950">
+                {{message}}
+            </div>
+        {% endfor %}
+ 
         
-            {{ form_start(registrationForm, {'attr' : { 'class' : 'flex flex-col justify-center items-center' } }) }}
+            {{ form_start(registrationForm, {'attr' : { 'class' : 'flex flex-col p-2' } }) }}
+                {{ form_errors(registrationForm , {'attr' : {'class' : 'w-1/2 my-2 text-sm'} }) }}
+
+                <div class="text-md font-bold mb-2 border-b-2 border-lime-600 italic">
+                    Bassic Information
+                </div>
 
                 <div class="flex flex-col">
                     {{ form_label(registrationForm.email,'Email') }}
                     {{ form_widget(registrationForm.email, {'attr': { 'class' : 'mb-3' } }) }}
                 </div>
 
-                <div class="grid grid-cols-1 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col">
                         {{ form_label(registrationForm.plainPassword.first) }}
                         {{ form_widget(registrationForm.plainPassword.first, {'attr': { 'class' : 'mb-3' } }) }}
@@ -37,8 +46,43 @@
                     {{form_widget(registrationForm.agreeTerms,{'attr': { 'class' : 'mb-4  mr-3' } })}}
                     {{form_label(registrationForm.agreeTerms, 'Agree to terms' ,{'label_attr': { 'class' : 'mb-4' } })}}
                 </div>
+
+                <div class="text-md font-bold mb-2 border-b-2 border-lime-600 italic flex flex-col">
+                    Your profile
+                    <small class="italic text-amber-950">Enter more details about yourself. You can do it later.</small>
+                </div>
+
+                <div class="flex flex-row mb-2">
+                    <div class="flex flex-col w-1/2 mr-3">
+                        {{form_label(registrationForm.profile.firstName,'FirstName',{'label_attr':{'class': 'mb-2 italic'} })}}
+                        {{form_widget(registrationForm.profile.firstName,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(registrationForm.profile.firstName)}}
+                    </div>
+    
+                    <div class="flex flex-col w-1/2">
+                        {{form_label(registrationForm.profile.lastName,'LastName',{'label_attr':{'class':'mb-2 italic'} })}}
+                        {{form_widget(registrationForm.profile.lastName,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(registrationForm.profile.lastName)}}
+                    </div>
+                </div>
+
+                <div class="flex flex-row mb-8">
+                    <div class="flex flex-col w-1/2 mr-3">
+                        {{form_label(registrationForm.profile.phone,'Phone',{'label_attr':{'class': 'mb-2 italic'} })}}
+                        {{form_widget(registrationForm.profile.phone,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(registrationForm.profile.phone)}}
+                    </div>
+    
+                    <div class="flex flex-col w-1/2">
+                        {{form_label(registrationForm.profile.dateOfBirth,'Date of birth',{'label_attr':{'class':'mb-2 italic'} })}}
+                        {{form_widget(registrationForm.profile.dateOfBirth,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(registrationForm.profile.dateOfBirth)}}
+                    </div>
+                </div>
         
-                <button type="submit " class="btn bg-lime-700 rounded-md py-3 px-5 m-2">Register</button>
+                <div class="flex justify-center items-center">
+                    <button type="submit " class="btn bg-lime-700 rounded-md py-3 px-5 m-2 w-1/2">Register</button>
+                </div>
             {{ form_end(registrationForm) }}
 
             <div class="flex flew-row justify-between">

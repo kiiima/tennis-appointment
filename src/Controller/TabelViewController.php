@@ -15,12 +15,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class TabelViewController extends AbstractController
 {
 
     /** @var unset $viewDate */
     private $viewDate;
+
+    public function __construct(private ParameterBagInterface $serviceParam)
+    {
+        
+    }
 
     private function selectForm(): Form
     {
@@ -86,6 +92,9 @@ class TabelViewController extends AbstractController
         $findDate = new DateTime($findDateString);
         $appointments = $menager->getRepository(BusyAppointments::class)->findBy(['date' => $findDate]);
 
+        $adminEmail = $this->serviceParam->get('admin_mail');
+        
+
         //prikaz forme
         return $this->render('tabel_view/index.html.twig', [
             'grounds' => $grounds,
@@ -95,7 +104,8 @@ class TabelViewController extends AbstractController
             'currUser' => $currentUser,
             'formSelect' => $formSelect,
             'date' => $selectDate,
-            'appointments' => $appointments
+            'appointments' => $appointments,
+            'adminEmail' => $adminEmail
         ]);
     }
 
