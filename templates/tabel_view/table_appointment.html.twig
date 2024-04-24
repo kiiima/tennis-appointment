@@ -38,22 +38,28 @@
               {% set aaa = "Ground" ~ aa %}
                 {% if appoint.time == i and appoint.ground.name == aaa %}
                   {% set oneTime = false %}
-                  <button class="p-2 {{app.user == appoint.user ? 'w-full bg-amber-200 text-amber-950 inline-block' : 'w-full disabled bg-lime-300 text-lime-300' }}">
-                    my appointment
-                  </button>
+                  {% if is_granted('ROLE_USER') %}
+                    <button class="p-2 w-full bg-lime-300 text-amber-950">
+                      {{appoint.user.email}}
+                    </button>
+                  {% else %}
+                      <button class="p-2 {{app.user == appoint.user ? 'w-full bg-amber-200 text-amber-950 inline-block' : 'w-full disabled bg-lime-300 text-lime-300' }}">
+                        my appointment
+                      </button>
+                  {% endif %}
                 {% endif %}
               {% endfor %}
 
               {% if is_granted('ROLE_VERIFY') %}
-              {% if oneTime == true %}
-                {% set oneTime = false %}
-                <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white hover:bg-lime-700 hover:text-amber-950">
-                  booking
-                </button>   
-              {% endif %}
-
+                {% if oneTime == true %}
+                  {% set oneTime = false %}
+                  <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != 'admin@admin.com'? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
+                    booking
+                  </button>  
+                {% endif %}
               {% else %}
                 {% if oneTime == true %}
+                  {% set oneTime = false %}
                   <button class="disabled p-2 w-full bg-white text-white">
                     booking
                   </button>  

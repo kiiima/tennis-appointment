@@ -53,6 +53,21 @@ class AppFixtures extends Fixture
         );
         $manager->persist($user3);
 
+        
+        $user4 = new User();
+        $user4->setEmail('admin@admin.com');
+        $user4->setPassword(
+            $this->hasherPassword->hashPassword(
+                $user2,
+                '12345678'
+            )   
+        );
+
+        $array = ['ROLE_ADMIN'];
+        $user4->setRoles($array);
+        $user4->setVerified(true);
+        $manager->persist($user4);
+
         $ground1 = new TennisGround();
         $ground1->setName('Ground1');
         $manager->persist($ground1);
