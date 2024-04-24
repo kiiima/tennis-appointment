@@ -1,0 +1,68 @@
+<!--selektor koji modul hocemo da otvorimo-->
+<button data-modal-target="#modal" 
+  class="p-2 w-full bg-white text-white hover:bg-lime-700 hover:text-amber-950">
+  booking
+</button> 
+<!--fixed pokrece sa sa nama-->
+<!--velicine 0 je elemenet-->
+<div class="modal fixed top-1/2 left-1/2 border-1px rounded-md p-3 z-10 bg-white w-1/2 max-w-2/3 translate-x-1/2 translate-y-1/2 scale-0 ease-in-out duration-200" id="modal">
+  <div class="modal-header py-10 px-15 flex justify-between item-center border-b-1px">
+    <div class="title text-xl text-bold">
+      AAAAAAAAAAAAAA
+    </div>
+    <button data-close-button class="close-button cursor-pointer outline-none bg-transparent text-md text-bold">
+      &times;
+    </button>
+  </div>
+  <div class="modal-body px-15 py-10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vitae dolor magna. 
+    Suspendisse id magna eget nunc mollis condimentum. Aenean vel purus ut felis interdum maximus. 
+    Aenean congue aliquam rhoncus. Vestibulum faucibus lectus at mi elementum fermentum. 
+    Pellentesque ullamcorper arcu mauris, vitae tincidunt nibh tempus vitae. Sed in ultrices eros. 
+    Mauris convallis vehicula urna vel pretium.
+  </div>
+  <div class="fixed top-0 bottom-0 right-0 left-0 pointer-event-none overlay opacity-0 ease-in-out duration-200"></div>
+</div>
+
+<script>
+  const openModalButtons = document.querySelectorAll('[data-modal-target]');
+  const closeModalButtons = document.querySelectorAll('[data-close-button]');
+  const overlay = document.getElementsByClassName('overlay');
+
+  openModalButtons.forEach(button => {
+    button.addEventListener('click', () =>{
+        const modal = document.querySelector(button.dataset.modalTarget)
+        openModal(modal)
+    })
+  });
+
+  closeModalButtons.forEach(button => {
+    button.addEventListener('click', () =>{
+        const modal = button.closest('.modal'); //vraca element koji je prvi roditelj koji ima klasu modal
+        closeModal(modal)
+    })
+  });
+
+  overlay.addEventListener('click', ()=>{
+    const modals = document.querySelectorAll('modal.active');
+    modals.forEach( modals => {
+      closeModal(modal)
+    })
+  });
+
+  function openModal(modal)
+  {
+    if(modal == null) return
+    modal.classList.add('active');
+    overlay.classList.add('active');
+  }
+
+
+  function closeModal(modal)
+  {
+    if(modal == null) return
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
+  }
+
+</script>
