@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    {{ include('tabel_view/_header.html.twig',{currUser:currUser}) }}
+    {{ include('tabel_view/table_appointment.html.twig',{start_time:start_time, end_time:end_time,grounds:grounds, formSelect: formSelect, appointments: appointments}) }}
+
+{% endblock %}

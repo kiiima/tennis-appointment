@@ -1,0 +1,69 @@
+<div class="mb-20 flex flex-row">
+
+  <!--div class="mx-10 mb-10 p-3 flex-shrink-0 flex flex-col"-->
+  {{ include('tabel_view/select_section.html.twig', {form:formSelect}) }}
+  <!--/div-->
+
+
+  <table class="border border-collapse border-slate-200 px-10 py-10 table-auto flex-grow mx-10 mb-10">
+    <!--naziv kolona-->
+    <tr class="m-2">
+      <th class="p-2 border border-slate-300">
+        Time
+      </th>
+      {% for ground in grounds %}
+        <th class="p-2 border border-slate-300">
+          {{ground.name}}
+        </th>
+      {% endfor %}
+    </tr>
+
+    {% for i in range(start_time,end_time-1) %}
+      <tr class="m-2">
+        {% for j in range(1,grounds|length+1) %}
+          <td class="p-2 border border-slate-300 text-center">
+            {% if j == 1 %}
+              {% if i in range(8,9) %}
+                0{{i}}:00  
+              {% else %}
+                 {{i}}:00
+              {% endif %}
+            {% else %}
+
+              <!--ako pripada zakazanim terminima prikazi ih-->
+              
+              {% set oneTime = true %}
+              {% for appoint in appointments %}
+              {% set aa = j-1 %}
+              {% set aaa = "Ground" ~ aa %}
+                {% if appoint.time == i and appoint.ground.name == aaa %}
+                  {% set oneTime = false %}
+                  <button class="p-2 {{app.user == appoint.user ? 'w-full bg-amber-200 text-amber-950 inline-block' : 'w-full disabled bg-lime-300 text-lime-300' }}">
+                    my appointment
+                  </button>
+                {% endif %}
+              {% endfor %}
+
+              {% if is_granted('ROLE_VERIFY') %}
+              {% if oneTime == true %}
+                {% set oneTime = false %}
+                <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white hover:bg-lime-700 hover:text-amber-950">
+                  booking
+                </button>   
+              {% endif %}
+
+              {% else %}
+                {% if oneTime == true %}
+                  <button class="disabled p-2 w-full bg-white text-white">
+                    booking
+                  </button>  
+                {% endif %}
+              {% endif %}
+              
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+</div>

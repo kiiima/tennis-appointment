@@ -1,0 +1,44 @@
+<!--form method="POST"
+  action="path('app_select_date') " 
+  class="mx-10 mb-10 p-3 flex-shrink-0 flex flex-col">
+  <button class="font-bold italic mb-3 hover:border-lime-300 hover:border hover:rounded-md p-3" type="submit">
+    Select date:
+  </button>
+
+  <select name="dateView"
+    class="appearance-none bg-white border border-gray-300 rounded px-4 py-2 shadow-md hover:border-gray-400">
+    { for i in range(0,6) %}
+
+      { set nextDay = today|date_modify('+' ~ i ~ ' day') %}
+      { if i == 0 %}
+        <option value="nextDay|date('d.m.Y')"
+          class="hover:bg-gray-100" selected> 
+            {nextDay|date('l, d.m.Y')}}
+        </option>
+      { else %}
+        <option value="nextDay|date('d.m.Y')"
+          class="hover:bg-gray-100"> 
+            {nextDay|date('l, d.m.Y')}}
+        </option>
+      { endif %}
+
+    { endfor %}
+  </select>
+</form-->
+
+<div class="flex flex-col m-2 mb-10">
+  {{ form_start(form, {'attr': {'class' : 'flex flex-col mb-7'} }) }}
+
+    <button class="font-bold italic mb-3 hover:border-lime-300 hover:border hover:rounded-md p-3" type="submit">
+      Select date:
+    </button>
+
+    {{ form_widget(form.dateView ,{'attr' :{ 'class' : 'appearance-none bg-white border border-gray-300 rounded px-4 py-2 shadow-md hover:border-gray-400' } }) }}
+
+  {{ form_end(form) }}
+
+    <!--div>
+        { include('tabel_view/booking.html.twig') }}
+    </div-->
+  </div>
+

@@ -1,0 +1,20 @@
+<header class="fixed top-0 left-0 right-0 w-full bg-white">
+  <div class="flex flex-row justify-between px-5 text-xl container py-2 border-b-2">
+    <div>
+      <a href="{{ path('app_tabel_view')}}" class="hover:bg-lime-200 p-1 hover:border hover:rounded-xl"> Home</a>
+      {% if currUser %}
+        
+        {{currUser.email}}
+      {% endif %}
+    </div>
+  
+    <div>
+      <a href="{{ path('app_register') }}" class="mx-5 hover:bg-lime-200 p-1 hover:border hover:rounded-xl">Registration</a>
+      {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <a href="{{ path('app_logout') }}" class="hover:bg-lime-200 p-1 hover:border hover:rounded-xl">LogOut</a>        
+      {% else %}
+        <a href="{{ path('app_login') }}" class="hover:bg-lime-200 p-1 hover:border hover:rounded-xl">LogIn</a>
+      {% endif %}
+    </div>
+  </div>
+</header>

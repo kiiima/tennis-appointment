@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<div class="flex justify-center items-center">
+    <form action="{{ path('app_login') }}" 
+        method="POST" 
+        class="border rounded-md py-5 px-20 flex flex-col bg-lime-200 shadow-xl shadow-grey-500/50 justify-center items-center w-1/3">
+        
+        <h3 class="text-lg mb-2 font-bold">Login form:</h3>
+
+        {% if errorMessage%}
+        <div class="w-1/2 italic text-red-900 mb-5">
+            Lozinka ne odgovara email, pokusajte ponovo!
+        </div>
+        {% else %}
+        <div class="mb-8">
+        </div>
+        {% endif %}
+
+        <div class="flex flex-col mt-2 mb-2">
+            <label class="mb-2 italic">
+                Email
+            </label>
+            <input type="text" 
+                name="_username" 
+                value="{{ lastUsername }}" 
+                class="border rounded-md">
+        </div>
+
+        <div class="flex flex-col mb-4">
+            <label class="mb-2 italic">
+                Password
+            </label>
+            <input type="password" 
+                name="_password" 
+                class="border rounded-md">
+        </div>
+
+        <input type="hidden" 
+            name="_target_path" 
+            value="/tabel_view">
+        <!--gde cemo preusmeriti prikaz kada popunimo formu-->
+
+        <button type="submit" 
+            class="bg-lime-300 border rounded-md px-5 py-2 w-1/2 hover:bg-lime-500 hover:shadow-xl hover:shadow-grey-500/50">
+            Login
+        </button>
+
+        <a href="{{ path('app_register') }}" class="text-orange-900 text-sm"> 
+            Don't have an account?->
+        </a>
+
+    </form>
+</div>
+{% endblock %}
