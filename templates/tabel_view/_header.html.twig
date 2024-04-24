@@ -11,6 +11,7 @@
     <div>
       <a href="{{ path('app_register') }}" class="mx-5 hover:bg-lime-200 p-1 {{app.user == null ? '' : 'disabled hidden' }} hover:border hover:rounded-xl">Registration</a>
       {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <a href="{{ path('app_user_profile') }}" class="hover:bg-lime-200 p-1 hover:border hover:rounded-xl">ProfileSetting</a>
         <a href="{{ path('app_logout') }}" class="hover:bg-lime-200 p-1 hover:border hover:rounded-xl">LogOut</a>        
       {% else %}
         <a href="{{ path('app_login') }}" class="hover:bg-lime-200 p-1 hover:border hover:rounded-xl">LogIn</a>

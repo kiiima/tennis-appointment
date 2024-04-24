@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ include('tabel_view/_header.html.twig',{currUser:app.user}) }}
+
+
+    <div class="flex justify-center item-center">
+        <!--izgled forme containtera-->
+        <div class="flex flex-col w-1/2 bg-lime-300 p-6 shadow-xl shadow-grey-500/50 rounded-md">
+            <div class="my-3 p-2">
+                <h1 class="text-2xl">Form Setting</h1>
+                {% for message in app.flashes('success') %}
+                    <div class="itali text-sm border border-2 border-amber-700 p-2 bg-amber-200 opacity-60 rounded-md mt-3 text-amber-950">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ form_start(form ,{'attr': {'class': 'p-2 flex flex-col justify-center' } }) }}
+                {{form_errors(form,{'attr': {'class' : 'text-sm text-amber-950 w-4/5' } })}}
+
+                <div class="flex flex-row mb-2">
+                    <div class="flex flex-col w-1/2 mr-3">
+                        {{form_label(form.firstName,'FirstName',{'label_attr':{'class': 'mb-2 italic'} })}}
+                        {{form_widget(form.firstName,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(form.firstName)}}
+                    </div>
+    
+                    <div class="flex flex-col w-1/2">
+                        {{form_label(form.lastName,'LastName',{'label_attr':{'class':'mb-2 italic'} })}}
+                        {{form_widget(form.lastName,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(form.lastName)}}
+                    </div>
+                </div>
+
+                <div class="flex flex-row mb-8">
+                    <div class="flex flex-col w-1/2 mr-3">
+                        {{form_label(form.phone,'Phone',{'label_attr':{'class': 'mb-2 italic'} })}}
+                        {{form_widget(form.phone,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(form.phone)}}
+                    </div>
+    
+                    <div class="flex flex-col w-1/2">
+                        {{form_label(form.dateOfBirth,'Date of birth',{'label_attr':{'class':'mb-2 italic'} })}}
+                        {{form_widget(form.dateOfBirth,{'attr': {'class' : 'rounded-md'} })}}
+                        {{form_errors(form.dateOfBirth)}}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <button class="bg-lime-600 p-2 inline text-amber-950 italic rounded-md w-1/2">
+                        Change profile date
+                    </button>
+                </div>
+
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

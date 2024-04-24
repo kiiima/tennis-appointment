@@ -4,15 +4,16 @@
   {{ include('tabel_view/select_section.html.twig', {form:formSelect}) }}
   <!--/div-->
 
+  {% set groundCount = grounds|length + 1 %}
 
   <table class="border border-collapse border-slate-200 px-10 py-10 table-auto flex-grow mx-10 mb-10">
     <!--naziv kolona-->
     <tr class="m-2">
-      <th class="p-2 border border-slate-300">
+      <th class="p-2 border border-slate-300 w-1/{{groundCount}}">
         Time
       </th>
       {% for ground in grounds %}
-        <th class="p-2 border border-slate-300">
+        <th class="p-2 border border-slate-300 w-1/{{groundCount}}">
           {{ground.name}}
         </th>
       {% endfor %}
@@ -21,7 +22,7 @@
     {% for i in range(start_time,end_time-1) %}
       <tr class="m-2">
         {% for j in range(1,grounds|length+1) %}
-          <td class="p-2 border border-slate-300 text-center">
+          <td class="p-2 border border-slate-300 text-center w-1/{{groundCount}}">
             {% if j == 1 %}
               {% if i in range(8,9) %}
                 0{{i}}:00  
@@ -55,7 +56,7 @@
               {% if is_granted('ROLE_VERIFY') %}
                 {% if oneTime == true %}
                   {% set oneTime = false %}
-                  <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != 'admin@admin.com'? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
+                  <button class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != 'admin@admin.com' ? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
                     booking
                   </button>  
                 {% endif %}
