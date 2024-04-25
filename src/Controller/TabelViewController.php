@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\BusyAppointments;
 use DateTime;
-use App\Entity\TennisGround;
+use App\Entity\User;
 use App\Form\ButtonType;
+use App\Entity\TennisGround;
+use App\Entity\BusyAppointments;
+use App\Repository\BusyAppointmentsRepository;
 use Symfony\Component\Form\Form;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,9 +59,22 @@ class TabelViewController extends AbstractController
         return $form;
     }
 
+    private function bookingForm(): Form
+    {
+        $form = $this->createFormBuilder()
+            ->add('hourlyRate', TextType::class)
+            ->add('bookGround', TextType::class)
+            ->add('username', TextType::class)
+            ->add('dateSelect', TextType::class)
+            ->getForm();
+
+        return $form;
+    }
+
+
     /** @param String $selectDate */
     #[Route('/tabel_view/{selectDate}', name: 'app_tabel_view', defaults:[ 'selectDate' => null ])]
-    public function index($selectDate, EntityManagerInterface $menager, Request $request): Response
+    public function index($selectDate, EntityManagerInterface $menager, Request $request, BusyAppointmentsRepository $managerBooking): Response
     {
 
         //pratimo koji je datum selectovan sve vreme
@@ -92,8 +107,34 @@ class TabelViewController extends AbstractController
         $findDate = new DateTime($findDateString);
         $appointments = $menager->getRepository(BusyAppointments::class)->findBy(['date' => $findDate]);
 
+        //get admin email from service
         $adminEmail = $this->serviceParam->get('admin_mail');
         
+        //make form for booking
+        $formBooking = $this->bookingForm();
+        $formBooking->get('dateSelect')->setData($selectDate);
+
+        $formBooking->handleRequest($request);
+        if($formBooking->isSubmitted() && $formBooking->isValid())
+        {
+
+            dd('AAAAAAAAAAAAAAAAAAA');
+            //redirect
+            /*$date2 = $formBooking->getData();
+            $groundName = $date2['bookGrounds'];
+            $userName = $date2['username'];
+            
+            dd($userName);
+
+            $ground = $menager->getRepository(TennisGround::class)->findOneBy(['name'=> $groundName]);
+            $user = $menager->getRepository(User::class)->findOneBy(['email'=>$userName]);
+
+
+            $appointment = new BusyAppointments($user, $ground);
+            $managerBooking->add($appointment,true);
+            $this->addFlash('success','Your appointment is booked');
+            return $this->redirectToRoute('app_tabel_view', ['selectDate' => $selectDate]);*/
+        }
 
         //prikaz forme
         return $this->render('tabel_view/index.html.twig', [
@@ -102,10 +143,12 @@ class TabelViewController extends AbstractController
             'end_time' => end_time,
             'today' => new DateTime(),
             'currUser' => $currentUser,
-            'formSelect' => $formSelect,
+            'formSelect' => $formSelect->createView(),
             'date' => $selectDate,
             'appointments' => $appointments,
-            'adminEmail' => $adminEmail
+            'adminEmail' => $adminEmail,
+            'formBooking' => $formBooking->createView(),
+            'selectDate' => $selectDate
         ]);
     }
 
