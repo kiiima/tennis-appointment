@@ -17,7 +17,7 @@
   <table class="border border-collapse border-slate-200 px-10 py-10 table-auto flex-grow mx-10 mb-10">
     <!--naziv kolona-->
     <tr class="m-2">
-      <th class="p-2 border border-slate-300 w-1/{{groundCount}}">
+      <th class="p-2 border border-slate-300 w-auto">
         Time
       </th>
       {% for ground in grounds %}
@@ -28,15 +28,15 @@
     </tr>
 
     {% for i in range(start_time,end_time-1) %}
-      <tr class="m-2">
-        {% for j in range(1,grounds|length+1) %}
-          <td class="p-2 border border-slate-300 text-center w-1/{{groundCount}}">
+      <tr>
+        {% for j in range(1,grounds|length+1) %} 
+          <td class=" border border-slate-300 {{ j == 1 ? 'w-auto text-center' : 'w-1/'~ groundCount}}">
             {% if j == 1 %}
-              {% if i in range(8,9) %}
-                0{{i}}:00  
-              {% else %}
-                 {{i}}:00
-              {% endif %}
+                {% if i in range(8,9) %}
+                  <p> 0{{i}}:00  - {{ i > 8 ? '' : '0' }}{{ i + 1 }}:00 </p>
+                {% else %}
+                  <p> {{i}}:00  - {{ i + 1 }}:00 </p>
+                {% endif %}
             {% else %}
 
               <!--ako pripada zakazanim terminima prikazi ih-->
@@ -49,9 +49,30 @@
                 {% if appoint.time == i and appoint.ground.name == aaa %}
                   {% set oneTime = false %}
                   {% if is_granted('ROLE_ADMIN') %}
-                    <button class="p-2 w-full bg-lime-300 text-amber-950">
+
+                    <button id="idInfo" data-i="{{i}}" data-j="{{j}}" class="p-2 w-full bg-lime-300 text-amber-950 relative">
                       {{appoint.user.email}}
+                      {% set idMoreInfo = "idMoreInfo" ~ i ~ j %}
+                      <div id="{{idMoreInfo}}" class="bg-zinc-950 absolute flex flex-col p-2 rounded-md top-5 left-2/3 opacity-0 z-10">
+                        <div class="text-white flex flex-row">
+                          <div class="mr-1">
+                            Name: 
+                          </div>
+                          <div>
+                            {{appoint.fullName}}
+                          </div>
+                        </div>
+                        <div class="text-white flex flex-row">
+                          <div class="mr-1">
+                            Phone: 
+                          </div>
+                          <div>
+                            {{appoint.phone}}
+                          </div>
+                        </div>
+                      </div>
                     </button>
+
                   {% else %}
                       <button class="p-2 {{app.user == appoint.user ? 'w-full bg-amber-200 text-amber-950 inline-block' : 'w-full disabled bg-lime-300 text-lime-300' }}">
                         my appointment
@@ -68,9 +89,10 @@
                   {% set index = j - 2 %}
 
                   {% set thisGround = grounds[index] %}
+                  {% set userEmail = app.user == null ? '' : app.user.email %}
                   <button data-modal-target="#modal" 
-                    onclick="openPopUp('{{i}}','{{thisGround.name }}','{{app.user.email }}','{{selectDate}}')"
-                    class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white {{ app.user.email != adminEmail ? 'hover:bg-lime-700 hover:text-amber-950':'' }}">
+                    onclick="openPopUp('{{i}}','{{thisGround.name }}','{{app.user.email }}','{{selectDate}}', '{{adminEmail}}','{{userEmail}}')"
+                    class="p-2 w-full {{app.user == null ? 'disabled' : '' }} bg-white text-white hover:bg-lime-700 hover:text-amber-950">
                     booking
                   </button>
 
@@ -97,12 +119,19 @@
       <h3 class="title text-xl text-bold">
         Booking appointment
       </h3>
+      <small>
+        {% for flash in app.flashes('bookingTermin') %}
+          {{flash}}
+        {% endfor %}
+      </small>
       <button id="close-button" class="close-button text-bold text-3xl mr-4 hover:cursor-pointer" onclick="closePopUp()">
         &times;
       </button>
     </div>
     <div class="modal-body">
-      {{form_start(formBooking,{'attr' :{'class':'grid grid-col-2 gap-3 '} })}}
+      {{form_start(formBooking,{'attr' :{ 'novalidate' : 'novalidate' , 'class':'grid grid-col-2 gap-3 '} })}}
+      
+
           <div class="flex flex-col">
             {{form_label(formBooking.hourlyRate)}}
             {{form_widget(formBooking.hourlyRate, {'attr':{'class':'js-time'} })}}
@@ -114,13 +143,25 @@
           </div>
 
         <div class="flex flex-col">
-          {{form_label(formBooking.username)}}
-          {{form_widget(formBooking.username,{'attr':{'class':'js-username'} })}}
+          {{form_label(formBooking.userName)}}
+          {{form_widget(formBooking.userName,{'attr':{'class':'js-username'} })}}
         </div>
 
         <div class="flex flex-col">
           {{form_label(formBooking.dateSelect)}}
           {{form_widget(formBooking.dateSelect,{'attr':{'class':'js-date'} })}}
+        </div>
+
+        <div class="flex flex-col">
+          {{form_label(formBooking.fullName)}}
+          {{form_widget(formBooking.fullName)}}
+          {{form_errors(formBooking.fullName)}}
+        </div>
+
+        <div class="flex flex-col">
+          {{form_label(formBooking.phone)}}
+          {{form_widget(formBooking.phone)}}
+          {{form_errors(formBooking.phone)}}
         </div>
 
         <div>
@@ -137,10 +178,39 @@
 
 <script>
 
-function openPopUp(i,groundName,username,selectDate) {
-  document.querySelector('.js-time').value = i;
+  var appointments = document.querySelectorAll('#idInfo');
+
+  appointments.forEach((button) =>{
+    var i = button.dataset.i;
+    var j = button.dataset.j;
+
+    var divId = "idMoreInfo" + String(i) + String(j);
+    
+
+    button.addEventListener('mouseover',function(){
+      document.getElementById(`${divId}`).style.opacity = '1';
+    });
+
+    button.addEventListener('mouseout', function(){
+      document.getElementById(`${divId}`).style.opacity = '0';
+    });
+
+  });
+
+function openPopUp(i,groundName,username,selectDate,adminEmail, userEmail) {
+  $time = document.querySelector('.js-time').value = i;
   document.querySelector('.js-ground').value = groundName;
-  document.querySelector('.js-username').value = username;
+
+  $fieldUsername = document.querySelector('.js-username');
+  
+  $fieldUsername.value = adminEmail == userEmail ? '' : username;
+  
+  if(adminEmail != userEmail)
+  {
+    $fieldUsername.setAttribute('readonly','readonly');
+  }
+  
+
   document.querySelector('.js-date').value = selectDate;
 
   var modal =document.getElementById("modal").style.display = "block";

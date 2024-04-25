@@ -10,6 +10,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -20,7 +22,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, unique: true )]
+    #[Assert\NotBlank( message :"Email field shouldn't be empty!")]
     private ?string $email = null;
 
     /**
@@ -33,6 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank( message :"Password field shouldn't be empty!")]
     private ?string $password = null;
 
     /**
@@ -47,6 +51,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     //cim napravimo user-a automatski se pravi i profil korisnika, cascade govori sta se desava sa ovom tabelom, kada se u jakom entitetu nesto promeni
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: UserProfile::class, cascade: ['persist', 'remove'])]
     private ?UserProfile $profile = null;
+
+    #[ORM\Column]
+    private ?bool $isBlocked = null;
 
     public function __construct()
     {
@@ -191,6 +198,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    public function isBlocked(): ?bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setBlocked(bool $isBlocked): static
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

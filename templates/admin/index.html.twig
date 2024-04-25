@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ include('tabel_view/_header.html.twig',{currUser:currentUser}) }}
+    <div class="flex flex-col bg-red-300 px-10">
+        {{include('admin/changeCntTimeGrounds.html.twig',{timeForm:timeForm})}}
+    </div>
+{% endblock %}

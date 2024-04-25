@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Valid;
 
 class RegistrationFormType extends AbstractType
 {
@@ -54,7 +55,11 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('profile', UserProfileType::class)
+            ->add('profile', UserProfileType::class, [
+                'constraints' => [
+                    new Valid()
+                ]
+            ])
         ;
     }
 

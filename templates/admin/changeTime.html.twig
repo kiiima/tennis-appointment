@@ -1,0 +1,18 @@
+{{ form_start(timeForm,{'attr': {'class' : 'p-3 flex flex-col justify-center'} }) }}
+  <h1 class="text-xl mb-4 font-bold">Set start and end of shift:</h1>
+  {{ form_errors(timeForm.startTime) }}
+  {{ form_errors(timeForm.startTime) }}
+
+  <div class="mb-2 p-2 flex flex-row">
+    {{ form_label(timeForm.startTime,'Start time:',{'label_attr': {'class' : 'mr-1 italic'} }) }}
+    {{ form_widget(timeForm.startTime) }}
+  </div>
+
+  <div class="mb-4 p-2 flex flex-row">
+    {{ form_label(timeForm.endTime,'End time:',{'label_attr': {'class' : 'mr-1 italic'} }) }}
+    {{ form_widget(timeForm.endTime) }}
+  </div>
+  <button type="submit" class="bg-lime-300 p-2 rounded-md">
+    Change 
+  </button>
+{{ form_end(timeForm) }}

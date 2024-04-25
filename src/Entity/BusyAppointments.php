@@ -36,6 +36,12 @@ class BusyAppointments
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $fullName = null;
+
+    #[ORM\Column]
+    private ?int $phone = null;
+
     /*
      * @var Collection<int, User>
      */
@@ -97,6 +103,30 @@ class BusyAppointments
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
+
+    public function setFullName(string $fullName): static
+    {
+        $this->fullName = $fullName;
+
+        return $this;
+    }
+
+    public function getPhone(): ?int
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(int $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }
