@@ -95,7 +95,7 @@ class TabelViewController extends AbstractController
         $formSelect->handleRequest($request);
 
         //pravimo formu za select element
-        if($formSelect->isSubmitted())
+        if($formSelect->isSubmitted() && $formSelect->isValid())
         {
             $date1 = $formSelect->getData();
             $viewDate = $date1['dateView'];
@@ -112,28 +112,32 @@ class TabelViewController extends AbstractController
         
         //make form for booking
         $formBooking = $this->bookingForm();
-        $formBooking->get('dateSelect')->setData($selectDate);
+       // $formBooking->get('dateSelect')->setData($selectDate);
 
         $formBooking->handleRequest($request);
+
         if($formBooking->isSubmitted() && $formBooking->isValid())
         {
-
-            dd('AAAAAAAAAAAAAAAAAAA');
             //redirect
-            /*$date2 = $formBooking->getData();
-            $groundName = $date2['bookGrounds'];
+            $date2 = $formBooking->getData();
+            $groundName = $date2['bookGround'];
             $userName = $date2['username'];
             
-            dd($userName);
 
             $ground = $menager->getRepository(TennisGround::class)->findOneBy(['name'=> $groundName]);
             $user = $menager->getRepository(User::class)->findOneBy(['email'=>$userName]);
 
 
             $appointment = new BusyAppointments($user, $ground);
+            $appointment->setTime(intval($date2['hourlyRate']));
+            $format = 'l, d.m.Y';
+            $date = DateTime::createFromFormat($format,$date2['dateSelect']);
+            $appointment->setDate($date);
+
+
             $managerBooking->add($appointment,true);
             $this->addFlash('success','Your appointment is booked');
-            return $this->redirectToRoute('app_tabel_view', ['selectDate' => $selectDate]);*/
+            return $this->redirectToRoute('app_tabel_view', ['selectDate' => $selectDate]);
         }
 
         //prikaz forme
