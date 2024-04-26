@@ -26,7 +26,7 @@ class AdminController extends AbstractController
 
         //dohvatamo difoltnu smenu i sve terene
         $shift = $manager->getRepository(WorkingTime::class)->findOneBy(['defaultTime' => true]);
-        $grounds =$manager->getRepository(TennisGround::class)->findAll();
+        $grounds =$manager->getRepository(TennisGround::class)->findBy(['isDelete' => false]);
 
         $form1 = $this->createForm(WorkingTimeType::class, $shift);
         
@@ -90,7 +90,7 @@ class AdminController extends AbstractController
 
     /** @param String idGround */
     #[Route('/admin/deleteGround/{idGround}', name:'app_delete_ground')]
-    public function deleteGround($idGround, EntityManagerInterface $manager) :void 
+    public function deleteGround($idGround, EntityManagerInterface $manager) :Response
     {
         $id = intval($idGround);
         
@@ -107,11 +107,35 @@ class AdminController extends AbstractController
 
         $manager->flush();
 
-        //brisanje terena iz baze
-        $manager->remove($ground);
+        //obeleziti teren da je obrisan
+        $ground->setDelete(true);
+        $manager->persist($ground);
         $manager->flush();
 
-
-        
+        return $this->redirectToRoute('app_admin');
     }
+
+    /** @param String idGround */
+    #[Route('/admin/blockedGround/{idGround}', name:'app_blocked_ground')]
+    public function BlockedGround($idGround, EntityManagerInterface $manager): Response
+    {
+        $id = intval($idGround);
+        
+        //dohvati teren koji treba da obrisemo
+        $ground = $manager->getRepository(TennisGround::class)->findOneBy(['id'=> $id]);   
+        if($ground->isBlocked())
+        {
+            $ground->setBlocked(false);
+        }
+        else
+        {
+            $ground->setBlocked(true);
+        }
+
+        $manager->persist($ground);
+        $manager->flush();
+
+        return $this->redirectToRoute('app_admin');
+    }
+
 }

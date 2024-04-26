@@ -27,6 +27,9 @@ class TennisGround
     #[ORM\Column]
     private ?bool $isBlocked = null;
 
+    #[ORM\Column]
+    private ?bool $isDelete = null;
+
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
@@ -90,6 +93,18 @@ class TennisGround
     public function setBlocked(bool $isBlocked): static
     {
         $this->isBlocked = $isBlocked;
+
+        return $this;
+    }
+
+    public function isDelete(): ?bool
+    {
+        return $this->isDelete;
+    }
+
+    public function setDelete(bool $isDelete): static
+    {
+        $this->isDelete = $isDelete;
 
         return $this;
     }
