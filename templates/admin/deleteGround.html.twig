@@ -1,0 +1,32 @@
+<!--prikaz svih terena-->
+<div class="flex flex-col w-full border border-grey-300 mb-3">
+  <!--naslov za tabelu-->
+  <div class="border-b border-grey-300 grid grid-cols-3 w-full h-full text-center">
+    <div class="border-r border-grey-300 p-2 bg-lime-300">
+      Name
+    </div>
+    <div class="border-r border-grey-300 p-2 bg-lime-300">
+      isBlocked
+    </div>
+    <div class="p-2 bg-lime-300">
+      Action
+    </div>
+  </div>
+
+  <!--telo tabele-->
+  {% for ground in grounds %}
+    <div class="border-b border-grey-300 grid grid-cols-3 w-full h-full text-center">
+      <div class="border-r border-grey-300 p-2">
+        {{ground.name}}
+      </div>
+      <div class="border-r border-grey-300 p-2">
+        {{ground.isBlocked == false ? 'NE' : 'DA'}} 
+      </div>
+      <div class="p-2">
+        <button class="bg-lime-300 rounded-md italic p-2 hover:bg-lime-400">
+          Delete
+        </button>
+      </div>
+    </div>
+  {% endfor %}
+</div>

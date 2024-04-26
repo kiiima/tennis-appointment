@@ -94,18 +94,22 @@ class AppFixtures extends Fixture
 
         $ground1 = new TennisGround();
         $ground1->setName('Ground1');
+        $ground1->setBlocked(false);
         $manager->persist($ground1);
 
         $ground2 = new TennisGround();
         $ground2->setName('Ground2');
+        $ground2->setBlocked(false);
         $manager->persist($ground2);
 
         $ground3 = new TennisGround();
         $ground3->setName('Ground3');
+        $ground3->setBlocked(false);
         $manager->persist($ground3);
 
         $ground4 = new TennisGround();
         $ground4->setName('Ground4');
+        $ground4->setBlocked(false);
         $manager->persist($ground4);
 
         $today = new DateTime();

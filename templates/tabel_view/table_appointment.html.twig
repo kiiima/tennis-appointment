@@ -21,7 +21,7 @@
         Time
       </th>
       {% for ground in grounds %}
-        <th class="p-2 border border-slate-300 w-1/{{groundCount}}">
+        <th class="p-2 border border-slate-30  w-1/{{groundCount}}">
           {{ground.name}}
         </th>
       {% endfor %}
@@ -50,16 +50,27 @@
                   {% set oneTime = false %}
                   {% if is_granted('ROLE_ADMIN') %}
 
-                    <button id="idInfo" data-i="{{i}}" data-j="{{j}}" class="p-2 w-full bg-lime-300 text-amber-950 relative">
+                    <button class="p-2 w-full bg-lime-300 text-amber-950 relative">
                       {{appoint.user.email}}
-                      {% set idMoreInfo = "idMoreInfo" ~ i ~ j %}
-                      <div id="{{idMoreInfo}}" class="bg-zinc-950 absolute flex flex-col p-2 rounded-md top-5 left-2/3 opacity-0 z-10">
+                      <div class="flow flow-row">
+                        Name:
+                        {{appoint.fullName}}
+                      </div>
+                      <div class="flow flow-row">
+                        Phone:
+                        {{appoint.phone}}
+                      </div>
+                    </button>
+                    <!--button id="idInfo" data-i="{i}" data-j="{j}}" class="p-2 w-full bg-lime-300 text-amber-950 relative">
+                      {appoint.user.email}}
+                      % set idMoreInfo = "idMoreInfo" ~ i ~ j %}
+                      <div id="{idMoreInfo}}" class="bg-zinc-950 absolute flex flex-col p-2 rounded-md top-5 left-2/3 opacity-0 z-10">
                         <div class="text-white flex flex-row">
                           <div class="mr-1">
                             Name: 
                           </div>
                           <div>
-                            {{appoint.fullName}}
+                            {appoint.fullName}}
                           </div>
                         </div>
                         <div class="text-white flex flex-row">
@@ -67,11 +78,11 @@
                             Phone: 
                           </div>
                           <div>
-                            {{appoint.phone}}
+                            {appoint.phone}}
                           </div>
                         </div>
                       </div>
-                    </button>
+                    </button-->
 
                   {% else %}
                       <button class="p-2 {{app.user == appoint.user ? 'w-full bg-amber-200 text-amber-950 inline-block' : 'w-full disabled bg-lime-300 text-lime-300' }}">

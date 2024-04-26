@@ -24,6 +24,9 @@ class TennisGround
     #[ORM\OneToMany(targetEntity: BusyAppointments::class, mappedBy: 'ground')]
     private Collection $appointments;
 
+    #[ORM\Column]
+    private ?bool $isBlocked = null;
+
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
@@ -75,6 +78,18 @@ class TennisGround
                 $appointment->setGround(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isBlocked(): ?bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setBlocked(bool $isBlocked): static
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

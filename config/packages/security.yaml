@@ -35,6 +35,8 @@ security:
     access_control:
     #zabrana cele sekcije putanja koje pocinju sa ^/admin, osim za one koji imaju ulogu ROLE_ADMIN
         - { path: ^/admin, roles: ROLE_ADMIN }
+        #- { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY, access_denied_url: ^/tabel_view}
+        #- { path: ^/admin, roles: IS_AUTHENTICATED_FULLY, access_denied_url: ^/tabel_view}
         # - { path: ^/profile, roles: ROLE_USER }
     role_hierarchy:
         ROLE_ADMIN: ROLE_VERIFY
