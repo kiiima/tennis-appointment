@@ -16,8 +16,6 @@ class BusyAppointments
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $time = null;
 
     /*
      * @var Collection<int, TennisGround>
@@ -42,45 +40,41 @@ class BusyAppointments
     #[ORM\Column]
     private ?int $phone = null;
 
-    /*
-     * @var Collection<int, User>
+    /**
+     * @Column(nullable = false, options= {"default":false} ) 
      */
-    //#[ORM\OneToMany(targetEntity: User::class, mappedBy: 'appointments')]
-    //private Collection $user;
+    #[ORM\Column(nullable: false, options : ['default' => false])]
+    private ?bool $isDelete = null;
 
-    public function __construct(User $user, TennisGround $ground)
-    {
-        $this->user = $user;
-        $this->ground = $ground;
-    }
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $startTime = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $endTime = null;
 
-    public function getTime(): ?int
-    {
-        return $this->time;
-    }
-
-    public function setTime(int $time): static
-    {
-        $this->time = $time;
-
-        return $this;
-    }
 
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(?\DateTimeInterface $dateOfBirth): static
     {
-        $this->date = $date;
+        $this->date = $dateOfBirth;
 
         return $this;
+    }
+
+    public function __construct(User $user, TennisGround $ground)
+    {
+        $this->user = $user;
+        $this->ground = $ground;
+        $this->isDelete = false;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getGround(): ?TennisGround
@@ -130,4 +124,41 @@ class BusyAppointments
 
         return $this;
     }
+
+    public function isDelete(): ?bool
+    {
+        return $this->isDelete;
+    }
+
+    public function setDelete(bool $isDelete): static
+    {
+        $this->isDelete = $isDelete;
+
+        return $this;
+    }
+
+    public function getStartTime(): ?\DateTimeInterface
+    {
+        return $this->startTime;
+    }
+
+    public function setStartTime(\DateTimeInterface $startTime): static
+    {
+        $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    public function getEndTime(): ?\DateTimeInterface
+    {
+        return $this->endTime;
+    }
+
+    public function setEndTime(\DateTimeInterface $endTime): static
+    {
+        $this->endTime = $endTime;
+
+        return $this;
+    }
+
 }

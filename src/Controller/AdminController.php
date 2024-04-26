@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\BusyAppointments;
 use App\Entity\TennisGround;
 use App\Entity\WorkingTime;
 use App\Form\AddTennisGroundType;
@@ -17,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    /** @param Array $grounds */
     public function index(EntityManagerInterface $manager, Request $request): Response
     {
         
@@ -35,8 +35,23 @@ class AdminController extends AbstractController
         //promena radnog vremena
         if($form1->isSubmitted() && $form1->isValid())
         {
+            /** @var WorkingTime $shift */
             $shift = $form1->getData();
+            $start_time = $shift->getStartTime();
+            $end_time = $shift->getEndTime();
+
+            $deleteAppointment = $manager->getRepository(BusyAppointments::class)->findByOutOfRange($start_time,$end_time);
             
+            foreach($deleteAppointment as $appointment)
+            {
+                $appointment->setDelete(true);
+                $manager->persist($appointment);
+            }
+    
+            $manager->flush();
+
+            //dohvatanje svih termina koji su sada izvan granica smene
+
             $manager->getRepository(WorkingTime::class)->add($shift,true);
            
             return $this->redirectToRoute('app_admin');
@@ -71,5 +86,32 @@ class AdminController extends AbstractController
             'grounds' => $grounds,
             'addGroundForm' => $form2
         ]);
+    }
+
+    /** @param String idGround */
+    #[Route('/admin/deleteGround/{idGround}', name:'app_delete_ground')]
+    public function deleteGround($idGround, EntityManagerInterface $manager) :void 
+    {
+        $id = intval($idGround);
+        
+        //dohvati teren koji treba da obrisemo
+        $ground = $manager->getRepository(TennisGround::class)->findOneBy(['id'=> $id]);
+        $deleteAppointments = $manager->getRepository(BusyAppointments::class)->findBy(['ground' => $ground]);
+        
+        //podesiti da su termini na tom terenu obrisani, posle prvog prikaza korisniku svih obrisanih termina, brisu se iz baze
+        foreach($deleteAppointments as $appointment)
+        {
+            $appointment->setDelete(true);
+            $manager->persist($appointment);
+        }
+
+        $manager->flush();
+
+        //brisanje terena iz baze
+        $manager->remove($ground);
+        $manager->flush();
+
+
+        
     }
 }

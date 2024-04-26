@@ -114,28 +114,48 @@ class AppFixtures extends Fixture
 
         $today = new DateTime();
         $booking1 = new BusyAppointments($user1, $ground1);
-        $booking1->setTime(9);
+        $time = new \DateTime();
+        $time->setTime(9, 0, 0);
+        $booking1->setStartTime($time);
+        $time = new \DateTime();
+        $time->setTime(10,0,0);
+        $booking1->setEndTime($time);
         $booking1->setDate($today);
         $booking1->setFullName('Mika Mikic');
         $booking1->setPhone(1234567123);
         $manager->persist($booking1);
 
         $booking2 = new BusyAppointments($user2, $ground3);
-        $booking2->setTime(18);
+        $time = new \DateTime();
+        $time->setTime(10, 0, 0);
+        $booking2->setStartTime($time);
+        $time = new \DateTime();
+        $time->setTime(11,0,0);
+        $booking2->setEndTime($time);
         $booking2->setDate($today);
         $booking2->setFullName('Zika Zikic');
         $booking2->setPhone(1234567123);
         $manager->persist($booking2);
 
         $booking3 = new BusyAppointments($user3, $ground2);
-        $booking3->setTime(13);
+        $time = new \DateTime();
+        $time->setTime(13, 0, 0);
+        $booking3->setStartTime($time);
+        $time = new \DateTime();
+        $time->setTime(14,0,0);
+        $booking3->setEndTime($time);
         $booking3->setDate($today);
         $booking3->setFullName('Rika Rikic');
         $booking3->setPhone(1234567123);
         $manager->persist($booking3);
 
         $booking4 = new BusyAppointments($user1, $ground4);
-        $booking4->setTime(10);
+        $time = new \DateTime();
+        $time->setTime(10, 0, 0);
+        $booking4->setStartTime($time);
+        $time = new \DateTime();
+        $time->setTime(11,0,0);
+        $booking4->setEndTime($time);
         $booking4->setDate($today);
         $booking4->setFullName('Rika Rikic');
         $booking4->setPhone(1234567123);
@@ -143,14 +163,24 @@ class AppFixtures extends Fixture
 
         $nextDay = clone $today;
         $booking6 = new BusyAppointments($user1, $ground1);
-        $booking6->setTime(9);
+        $time = new \DateTime();
+        $time->setTime(9, 0, 0);
+        $booking6->setStartTime($time);
+        $time = new \DateTime();
+        $time->setTime(10,0,0);
+        $booking6->setEndTime($time);
         $booking6->setDate($nextDay->modify('+1 day'));
         $booking6->setFullName('Tika Tikic');
         $booking6->setPhone(1234567123);
         $manager->persist($booking6);
 
         $booking5 = new BusyAppointments($user2, $ground3);
-        $booking5->setTime(9);
+        $time = new \DateTime();
+        $time->setTime(9, 0, 0);
+        $booking5->setStartTime($time);
+        $time = new \DateTime();
+        $time->setTime(10,0,0);
+        $booking5->setEndTime($time);
         $booking5->setDate($today);
         $booking5->setFullName('Rika Sikic');
         $booking5->setPhone(1234567123);

@@ -42,6 +42,18 @@ class BusyAppointmentsRepository extends ServiceEntityRepository
         }
     }
 
+    /** @return BusyAppointments[] */
+    public function findByOutOfRange($start_time, $end_time): array
+    {
+        $query = $this->createQueryBuilder('p') //mi smo u busyAppointment tabeli
+                ->where('(p.startTime < :start_time and p.endTime <= :start_time ) or (p.startTime >= :end_time and p.endTime > :end_time)')
+                ->setParameter('start_time', $start_time)
+                ->setParameter('end_time', $end_time)
+                ->getQuery();
+
+        return $query->execute();
+    }
+
     //    /**
     //     * @return BusyAppointments[] Returns an array of BusyAppointments objects
     //     */

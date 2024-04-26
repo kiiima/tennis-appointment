@@ -211,7 +211,7 @@ class TabelViewController extends AbstractController
         //dohvati sve zakazane termine koji postoje za selektovan datum i prikazati ih
         $findDateString = date('Y-m-d',strtotime($selectDate));
         $findDate = new DateTime($findDateString);
-        $appointments = $menager->getRepository(BusyAppointments::class)->findBy(['date' => $findDate]);
+        $appointments = $menager->getRepository(BusyAppointments::class)->findBy(['date' => $findDate, 'isDelete' => false]);
         $users = $menager->getRepository(User::class)->findAll();
         
         //make form for booking
@@ -240,7 +240,7 @@ class TabelViewController extends AbstractController
 
 
                 $appointment = new BusyAppointments($user, $ground);
-                $appointment->setTime(intval($date2['hourlyRate']));
+                //$appointment->setTime(intval($date2['hourlyRate']));
                 $format = 'l, d.m.Y';
                 $date = DateTime::createFromFormat($format,$date2['dateSelect']);
                 $appointment->setDate($date);

@@ -46,7 +46,7 @@
               {% set aa = j-1 %}
               {% set aaa = "Ground" ~ aa %}
                 <!--ovaj termin je zakazan-->
-                {% if appoint.time == i and appoint.ground.name == aaa %}
+                {% if appoint.startTime|date('H') == i and appoint.ground.name == aaa %}
                   {% set oneTime = false %}
                   {% if is_granted('ROLE_ADMIN') %}
 
