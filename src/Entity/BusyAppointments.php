@@ -53,6 +53,7 @@ class BusyAppointments
     private ?\DateTimeInterface $endTime = null;
 
 
+
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;

@@ -33,6 +33,7 @@ class TennisGround
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
+        $this->isDelete = false;
     }
 
     //#[ORM\ManyToOne(inversedBy: 'ground')] //mozemo da imamo vise termina zakazanih za ovaj teren

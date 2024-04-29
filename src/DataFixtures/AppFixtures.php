@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\BusyAppointments;
 use App\Entity\TennisGround;
 use App\Entity\User;
+use App\Entity\UserProfile;
 use App\Entity\WorkingTime;
 use DateTime;
 use Doctrine\Persistence\ObjectManager;
@@ -54,6 +55,13 @@ class AppFixtures extends Fixture
         $user1->setVerified(true);
         $manager->persist($user1);
 
+        $profile1 = new UserProfile();
+        $profile1->setUser($user1);
+        $profile1->setFirstName('Mika');
+        $profile1->setLastName('Mikic');
+        $profile1->setPhone(123456798);
+        $manager->persist($profile1);
+
         $user2 = new User();
         $user2->setEmail('test2@test2.com');
         $user2->setBlocked(false);
@@ -65,6 +73,13 @@ class AppFixtures extends Fixture
         );
         $manager->persist($user2);
 
+        $profile2 = new UserProfile();
+        $profile2->setUser($user2);
+        $profile2->setFirstName('Zika');
+        $profile2->setLastName('Zikic');
+        $profile2->setPhone(123456798);
+        $manager->persist($profile2);
+
         $user3 = new User();
         $user3->setEmail('test3@test3.com');
         $user3->setBlocked(false);
@@ -75,6 +90,13 @@ class AppFixtures extends Fixture
             )   
         );
         $manager->persist($user3);
+
+        $profile3 = new UserProfile();
+        $profile3->setUser($user3);
+        $profile3->setFirstName('Pika');
+        $profile3->setLastName('Pikic');
+        $profile3->setPhone(123456798);
+        $manager->persist($profile3);
 
         
         $user4 = new User();
@@ -91,6 +113,13 @@ class AppFixtures extends Fixture
         $user4->setRoles($array);
         $user4->setVerified(true);
         $manager->persist($user4);
+
+        $profile4 = new UserProfile();
+        $profile4->setUser($user4);
+        $profile4->setFirstName('Sanja');
+        $profile4->setLastName('Sanjic');
+        $profile4->setPhone(123456798);
+        $manager->persist($profile4);
 
         $ground1 = new TennisGround();
         $ground1->setName('Ground1');
@@ -122,6 +151,7 @@ class AppFixtures extends Fixture
         $booking1->setEndTime($time);
         $booking1->setDate($today);
         $booking1->setFullName('Mika Mikic');
+        $booking1->setDelete(false);
         $booking1->setPhone(1234567123);
         $manager->persist($booking1);
 
@@ -135,6 +165,7 @@ class AppFixtures extends Fixture
         $booking2->setDate($today);
         $booking2->setFullName('Zika Zikic');
         $booking2->setPhone(1234567123);
+        $booking2->setDelete(false);
         $manager->persist($booking2);
 
         $booking3 = new BusyAppointments($user3, $ground2);
@@ -145,6 +176,7 @@ class AppFixtures extends Fixture
         $time->setTime(14,0,0);
         $booking3->setEndTime($time);
         $booking3->setDate($today);
+        $booking3->setDelete(false);
         $booking3->setFullName('Rika Rikic');
         $booking3->setPhone(1234567123);
         $manager->persist($booking3);
@@ -157,6 +189,7 @@ class AppFixtures extends Fixture
         $time->setTime(11,0,0);
         $booking4->setEndTime($time);
         $booking4->setDate($today);
+        $booking4->setDelete(false);
         $booking4->setFullName('Rika Rikic');
         $booking4->setPhone(1234567123);
         $manager->persist($booking4);
@@ -172,6 +205,7 @@ class AppFixtures extends Fixture
         $booking6->setDate($nextDay->modify('+1 day'));
         $booking6->setFullName('Tika Tikic');
         $booking6->setPhone(1234567123);
+        $booking6->setDelete(false);
         $manager->persist($booking6);
 
         $booking5 = new BusyAppointments($user2, $ground3);
@@ -180,6 +214,7 @@ class AppFixtures extends Fixture
         $booking5->setStartTime($time);
         $time = new \DateTime();
         $time->setTime(10,0,0);
+        $booking5->setDelete(false);
         $booking5->setEndTime($time);
         $booking5->setDate($today);
         $booking5->setFullName('Rika Sikic');

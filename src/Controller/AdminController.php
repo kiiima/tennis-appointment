@@ -2,21 +2,31 @@
 
 namespace App\Controller;
 
-use App\Entity\BusyAppointments;
-use App\Entity\TennisGround;
+use App\Entity\User;
 use App\Entity\WorkingTime;
-use App\Form\AddTennisGroundType;
+use App\Entity\TennisGround;
 use App\Form\WorkingTimeType;
-use App\Repository\TennisGroundRepository;
+use App\Entity\BusyAppointments;
+use App\Form\AddTennisGroundType;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\TennisGroundRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 class AdminController extends AbstractController
 {
+
+
+    public function __construct(private ParameterBagInterface $serviceParam)
+    {
+        
+    }
+
+
     #[Route('/admin', name: 'app_admin')]
     public function index(EntityManagerInterface $manager, Request $request): Response
     {
@@ -69,6 +79,7 @@ class AdminController extends AbstractController
             $newGround = new TennisGround();
             $newGround->setBlocked(false);
             $newGround->setName($data['name']);
+            $newGround->setDelete(false);
             //sacuvaj u bazi
             $manager->persist($newGround);
             $manager->flush();
@@ -80,11 +91,18 @@ class AdminController extends AbstractController
 
         }
 
+
+        //dohvati sve usere
+        $users = $manager->getRepository(User::class)->findAll();
+        $adminEmail = $this->serviceParam->get('admin_mail');
+
         return $this->render('admin/index.html.twig', [
             'currentUser' => $currentUser,
             'timeForm' => $form1,
             'grounds' => $grounds,
-            'addGroundForm' => $form2
+            'addGroundForm' => $form2,
+            'users' => $users,
+            'adminEmail' => $adminEmail
         ]);
     }
 
@@ -112,6 +130,8 @@ class AdminController extends AbstractController
         $manager->persist($ground);
         $manager->flush();
 
+        $this->addFlash('deleteGround', 'You are delete ground!');
+
         return $this->redirectToRoute('app_admin');
     }
 
@@ -126,14 +146,43 @@ class AdminController extends AbstractController
         if($ground->isBlocked())
         {
             $ground->setBlocked(false);
+            $manager->persist($ground);
+            $manager->flush();
+            $this->addFlash('blockedGround', 'You are blocked ground!');
         }
         else
         {
             $ground->setBlocked(true);
+            $manager->persist($ground);
+            $manager->flush();
+            $this->addFlash('unblockedGround', 'You are unblocked ground!');
         }
 
-        $manager->persist($ground);
-        $manager->flush();
+
+        return $this->redirectToRoute('app_admin');
+    }
+
+    /** @param String email */
+    #[Route( 'admin/blockedUser/{email}' ,name : 'app_blocked_user')]
+    public function blockedUser($email,EntityManagerInterface $manager) :Response
+    {
+        $user = $manager->getRepository(User::class)->findOneBy(['email'=> $email]);
+        
+        if($user->isBlocked() == false)
+        {
+            $user->setBlocked(true);
+            $manager->persist($user);
+            $manager->flush($user);
+            $this->addFlash('unblockedUser', 'You are unblocked user!');
+        }
+        else
+        {
+            $user->setBlocked(false);
+            $manager->persist($user);
+            $manager->flush($user);
+            $this->addFlash('blockedUser', 'You are blocked user!');
+        }
+
 
         return $this->redirectToRoute('app_admin');
     }

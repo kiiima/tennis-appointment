@@ -1,0 +1,61 @@
+<div class="grid grid-cols-1 border border-gray-300">
+  <div class="grid grid-cols-5 gap-3 border-b border-gray-300 text-center bg-lime-300">
+    <div class="border-r border-gray-300 p-2">Username</div>
+    <div class="border-r border-gray-300 p-2">First Name</div>
+    <div class="border-r border-gray-300 p-2">Last Name</div>
+    <div class="border-r border-gray-300 p-2">Phone</div>
+    <div class="p-2">isBlocked</div>
+  </div>
+
+  {% for user in users %}
+    {% if user.email != adminEmail %}
+      <div class="grid grid-cols-5 gap-3 border-b border-gray-300 justify-center text-center">
+        <div class="border-r border-gray-300 p-2">
+          {{user.email}}
+        </div>
+        <div class="border-r border-gray-300 p-2">
+          {{user.profile.firstName}}
+        </div>
+        <div class="border-r border-gray-300 p-2">
+          {{user.profile.lastName}}
+        </div>
+        <div class="border-r border-gray-300 p-2">
+          {{user.profile.phone}}
+        </div>
+        <div class="p-2">
+          {% if user.isBlocked == false %}
+            <button class="bg-lime-300 rounded-md italic p-2 hover:bg-lime-400" onclick="blockedUser('{{user.email}}')">
+              Blocked
+            </button>
+          {% else %}
+            <button class="bg-lime-300 rounded-md italic p-2 hover:bg-lime-400" onclick="unblockedUser('{{user.email}}')">
+              Unblocked
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+</div>
+
+<script>
+
+function blockedUser(email)
+{
+  var encodedId = encodeURIComponent(email);
+  // Koristimo Symfony path funkciju da bismo generisali URL
+  var url = "{{ path('app_blocked_user', {'email': 'IDGROUND'}) }}".replace('IDGROUND', encodedId);
+  // Redirekcija na URL
+  window.location.href = url;
+}
+
+function unblockedUser(email)
+{
+  var encodedId = encodeURIComponent(email);
+  // Koristimo Symfony path funkciju da bismo generisali URL
+  var url = "{{ path('app_blocked_user', {'email': 'IDGROUND'}) }}".replace('IDGROUND', encodedId);
+  // Redirekcija na URL
+  window.location.href = url;
+}
+</script>
