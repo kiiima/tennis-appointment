@@ -99,6 +99,16 @@ class TabelViewController extends AbstractController
                     return ['class' => 'hover:bg-gray-100'];
                 }
             ])
+            ->add('hourlyRateEnd', ChoiceType::class, [
+                'choices' => array_combine(range($start_time,$end_time,1),range($start_time,$end_time,1)),
+                'choice_label' => function($value, $key, $index)
+                {
+                    return $value;
+                },
+                'choice_attr' => function($choice, $key, $value) {
+                    return ['class' => 'hover:bg-gray-100'];
+                }
+            ])
             ->add('bookGround', ChoiceType::class, [
                 'choices' => array_map([TabelViewController::class, 'getTennisGroundName'] ,$grounds),
                 'choice_label' => function($value, $key, $index)
@@ -121,7 +131,6 @@ class TabelViewController extends AbstractController
                 'preferred_choices' => [ $selectDate ]
             ])
             ->add('fullName', TextType::class, [
-                'mapped' => false,
                 'constraints' =>[
                     new NotBlank([
                         'message' => 'Please enter your full name!'
@@ -129,7 +138,6 @@ class TabelViewController extends AbstractController
                 ]
             ])
             ->add('phone', TelType::class,[
-                'mapped' => false,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter your full name!'
@@ -187,7 +195,7 @@ class TabelViewController extends AbstractController
         }
 
         //dohvati termin koji ti treba i terene
-        $grounds = $menager->getRepository(TennisGround::class)->findAll();
+        $grounds = $menager->getRepository(TennisGround::class)->findBy(['isDelete' => false]);
 
         //define('start_time', 8);
         //define('end_time',21);
@@ -226,13 +234,18 @@ class TabelViewController extends AbstractController
             $date2 = $formBooking->getData();
             $groundName = $date2['bookGround'];
             $userName = $date2['userName'];
-            $time = $date2['hourlyRate'];
+            $startTime = new DateTime();
+            $intStartTime = intval($date2['hourlyRate']);
+            $startTime->setTime($intStartTime,0,0);
+            $intStartTime += 1;
+            $endTime = new DateTime();
+            $endTime->setTime($intStartTime,0,0);
             $date  = $date2['dateSelect'];
 
             //provera da li je taj termin vec rezervisan
             $format = 'l, d.m.Y';
             $ground = $menager->getRepository(TennisGround::class)->findOneBy(['name'=> $groundName]);
-            $sameTermin = $menager->getRepository(BusyAppointments::class)->findBy(['time' => intval($time) , 'ground' => $ground, 'date' => DateTime::createFromFormat($format, $date) ]);
+            $sameTermin = $menager->getRepository(BusyAppointments::class)->findBy(['startTime' => $startTime , 'ground' => $ground, 'date' => DateTime::createFromFormat($format, $date) ]);
             
             if(empty($sameTermin))
             {//mozemo da zakazemo termin
@@ -244,6 +257,10 @@ class TabelViewController extends AbstractController
                 $format = 'l, d.m.Y';
                 $date = DateTime::createFromFormat($format,$date2['dateSelect']);
                 $appointment->setDate($date);
+                $appointment->setStartTime($startTime);
+                $appointment->setEndTime($endTime);
+                $appointment->setFullName($date2['fullName']);
+                $appointment->setPhone($date2['phone']);
     
     
                 $managerBooking->add($appointment,true);
@@ -255,6 +272,39 @@ class TabelViewController extends AbstractController
             }
             
             return $this->redirectToRoute('app_tabel_view', ['selectDate' => $selectDate]);
+        }
+
+        //poruke za obrisane termine
+        $myAppointment = $menager->getRepository(BusyAppointments::class)->findBy(['user' => $currentUser, 'isDelete' => true]);
+        foreach($myAppointment as $myappoint)
+        {
+            $today = new DateTime(); 
+            $today->setTime(0,0,0);
+            $sTime = $myappoint->getStartTime();
+            $eTime = $myappoint->getEndTime();
+            $date = $myappoint->getDate();
+            $date->setTime(0,0,0);
+            if($today <= $date)
+            {
+                $message = 'Your appointment at ' . $sTime->format('H:i') . ' - ' . $eTime->format('H:i') . ' ' . $myappoint->getDate()->format('l, d.m.Y') . ' on ground '. $myappoint->getGround()->getName() . 'is disabled';
+                
+
+                $this->addFlash('deleteMyAppointment', $message);
+            }
+
+            $menager->remove($myappoint);
+            $menager->flush();
+
+            $thisGround = $myappoint->getGround();
+            if($thisGround->isDelete() == true)
+            {
+                $restAppointment = $menager->getRepository(BusyAppointments::class)->findBy(['ground' => $thisGround]);
+                if(empty($restAppointment))
+                {
+                    $menager->remove($thisGround);
+                    $menager->flush();
+                }
+            }
         }
 
         //prikaz forme

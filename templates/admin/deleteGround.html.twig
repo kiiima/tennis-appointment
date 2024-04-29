@@ -1,20 +1,22 @@
-<!--prikaz svih terena-->
-<div class="flex flex-col w-full border border-grey-300 mb-3">
-  <!--naslov za tabelu-->
-  <div class="border-b border-grey-300 grid grid-cols-3 w-full h-full text-center">
-    <div class="border-r border-grey-300 p-2 bg-lime-300">
-      Name
+<div class="max-h-[300px]">
+  <!--prikaz svih terena-->
+  <div class="flex flex-col w-full mb-3 border border-grey-300 max-h-50">
+    <!--naslov za tabelu-->
+    <div class="border-b border-grey-300 grid grid-cols-3 w-full h-full text-center">
+      <div class="border-r border-grey-300 p-2 bg-lime-300">
+        Name
+      </div>
+      <div class="border-r border-grey-300 p-2 bg-lime-300">
+        isBlocked
+      </div>
+      <div class="p-2 bg-lime-300">
+        Action
+      </div>
     </div>
-    <div class="border-r border-grey-300 p-2 bg-lime-300">
-      isBlocked
-    </div>
-    <div class="p-2 bg-lime-300">
-      Action
-    </div>
-  </div>
 
-  <!--telo tabele-->
-  {% for ground in grounds %}
+    <div class="overflow-y-scroll max-h-[250px]">
+      <!--telo tabele-->
+    {% for ground in grounds %}
     <div class="border-b border-grey-300 grid grid-cols-3 w-full h-full text-center">
       <div class="border-r border-grey-300 p-2">
         {{ground.name}}
@@ -38,10 +40,11 @@
       </div>
     </div>
   {% endfor %}
-</div>
+    </div>
+  </div>
+</div>  
 
 <script>
-
   function blockedGround(idGround)
   {
     var encodedId = encodeURIComponent(idGround);
@@ -70,5 +73,4 @@
     // Redirekcija na URL
     window.location.href = url;
   }
-
 </script>

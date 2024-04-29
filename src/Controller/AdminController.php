@@ -75,17 +75,42 @@ class AdminController extends AbstractController
         if($form2->isSubmitted() && $form2->isValid())
         {
             $data = $form2->getData();
-            //napravi instancu terena
-            $newGround = new TennisGround();
-            $newGround->setBlocked(false);
-            $newGround->setName($data['name']);
-            $newGround->setDelete(false);
-            //sacuvaj u bazi
-            $manager->persist($newGround);
-            $manager->flush();
 
-            //flash kartice
-            $this->addFlash('addGround','You added new groud.');
+            $groundExist = $manager->getRepository(TennisGround::class)->findOneBy(['name' => $data['name']]);
+            if(empty($groundExist))
+            {
+                //napravi instancu terena
+                $newGround = new TennisGround();
+                $newGround->setBlocked(false);
+                $newGround->setName($data['name']);
+                $newGround->setDelete(false);
+
+                //sacuvaj u bazi
+                $manager->persist($newGround);
+                $manager->flush();
+
+                //flash kartice
+                $this->addFlash('addGround','You added new groud.');
+            }
+            else
+            {
+                if($groundExist->isDelete() == true)
+                {
+                    $groundExist->setDelete(false);
+                    //sacuvaj u bazi
+                    $manager->persist($groundExist);
+                    $manager->flush();
+
+                    //flash kartice
+                    $this->addFlash('addGround','You added new groud.');
+                }
+                else
+                {
+                    $this->addFlash('alreadyExist', 'Ground with that name already exist');
+                }
+
+            }
+
             //redirekcija
             return $this->redirectToRoute('app_admin');
 
