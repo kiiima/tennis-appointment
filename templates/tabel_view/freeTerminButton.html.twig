@@ -1,0 +1,11 @@
+{% if j != 1 and grounds[j - 2].isBlocked == true %}
+  <button class="p-2 w-full h-full br-gray-200 text-gray-200">
+    booking
+  </button>
+{% else %}
+  <button data-modal-target="#modal" 
+  onclick="openPopUp('{{i}}','{{endI}}','{{thisGround.name }}','{{app.user.email }}','{{selectDate}}', '{{adminEmail}}','{{userEmail}}')"
+  class="p-2 w-full h-wull {{app.user == null or app.user.isBlocked == true ? 'disabled' : '' }} bg-white text-white  hover:bg-lime-700 hover:text-amber-950 hover:w-full hover:h-full">
+    booking
+  </button>
+{% endif %}

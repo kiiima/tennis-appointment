@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\BusyAppointments;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -52,6 +53,24 @@ class BusyAppointmentsRepository extends ServiceEntityRepository
                 ->getQuery();
 
         return $query->execute();
+    }
+
+    /** @return BusyAppointments[] */
+    public function findByInOfRange($start_time, $end_time, $date, $ground): array
+    {
+        $queryBuilder = $this->createQueryBuilder('ba');
+        $query = $queryBuilder
+        ->where('TIME_FORMAT(ba.startTime, "%H:%i") < TIME_FORMAT( :start_time , "%H:%i")')
+        ->andWhere('TIME_FORMAT(ba.endTime, "%H:%i") < TIME_FORMAT( :end_time , "%H:%i")')
+            ->andWhere('ba.date = :date')
+            ->andWhere('ba.ground = :ground')
+            ->setParameter('start_time', $start_time)
+            ->setParameter('end_time', $end_time)
+            ->setParameter('date', $date)
+            ->setParameter('ground', $ground)
+            ->getQuery();
+    
+        return $query->getResult();
     }
 
     //    /**

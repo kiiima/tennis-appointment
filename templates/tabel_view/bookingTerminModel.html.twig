@@ -1,0 +1,60 @@
+<div class="modal hidden fixed top-1/2 left-1/2 border-1 border-amber-950 rounded-md p-3 z-10 bg-lime-300 w-1/2 max-w-2/3 ease-in-out duration-200" id="modal">
+  <div class="modal-header px-15 flex justify-between border-b-1 mr-4 mb-5">
+    <h3 class="title text-xl text-bold">
+      Booking appointment
+    </h3>
+    <button id="close-button" class="close-button text-bold text-3xl mr-4 hover:cursor-pointer" onclick="closePopUp()">
+      &times;
+    </button>
+  </div>
+  <div class="modal-body">
+    {{form_start(formBooking,{'attr' :{ 'novalidate' : 'novalidate' , 'class':'grid grid-col-2 gap-3 '} })}}
+    
+
+        <div class="flex flex-col">
+          {{form_label(formBooking.hourlyRate)}}
+          {{form_widget(formBooking.hourlyRate, {'attr':{'class':'js-time'} })}}
+        </div>
+
+        <div class="flex flex-col">
+          {{form_label(formBooking.hourlyRateEnd)}}
+          {{form_widget(formBooking.hourlyRateEnd, {'attr':{'class':'js-time-end'} })}}
+        </div>
+
+        <div class="flex flex-col">
+          {{form_label(formBooking.bookGround)}}
+          {{form_widget(formBooking.bookGround,{'attr':{'class':'js-ground'} })}}
+        </div>
+
+      <div class="flex flex-col">
+        {{form_label(formBooking.userName)}}
+        {{form_widget(formBooking.userName,{'attr':{'class':'js-username'} })}}
+      </div>
+
+      <div class="flex flex-col">
+        {{form_label(formBooking.dateSelect)}}
+        {{form_widget(formBooking.dateSelect,{'attr':{'class':'js-date'} })}}
+      </div>
+
+      <div class="flex flex-col">
+        {{form_label(formBooking.fullName)}}
+        {{form_widget(formBooking.fullName)}}
+        {{form_errors(formBooking.fullName)}}
+      </div>
+
+      <div class="flex flex-col">
+        {{form_label(formBooking.phone)}}
+        {{form_widget(formBooking.phone)}}
+        {{form_errors(formBooking.phone)}}
+      </div>
+
+      <div>
+        <button class="bg-lime-600 text-amber-950 w-1/2" type="submit">
+          Booked
+        </button>
+      </div>
+    {{form_end(formBooking)}}
+  </div>
+</div>
+<div class="overlay fixed top-0 bottom-0 right-0 left-0 bg-black opacity-50 z-2 hidden" id="overlay"></div>
+

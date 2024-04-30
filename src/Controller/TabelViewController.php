@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -228,6 +229,7 @@ class TabelViewController extends AbstractController
 
         $formBooking->handleRequest($request);
 
+        //zakazivanje termina
         if($formBooking->isSubmitted() && $formBooking->isValid())
         {
             //redirect
@@ -237,33 +239,52 @@ class TabelViewController extends AbstractController
             $startTime = new DateTime();
             $intStartTime = intval($date2['hourlyRate']);
             $startTime->setTime($intStartTime,0,0);
-            $intStartTime += 1;
             $endTime = new DateTime();
-            $endTime->setTime($intStartTime,0,0);
+            $intEndTime = intval($date2['hourlyRateEnd']);
+            $endTime->setTime($intEndTime,0,0);
             $date  = $date2['dateSelect'];
+
 
             //provera da li je taj termin vec rezervisan
             $format = 'l, d.m.Y';
+            $fullDate = DateTime::createFromFormat($format,$date);
             $ground = $menager->getRepository(TennisGround::class)->findOneBy(['name'=> $groundName]);
-            $sameTermin = $menager->getRepository(BusyAppointments::class)->findBy(['startTime' => $startTime , 'ground' => $ground, 'date' => DateTime::createFromFormat($format, $date) ]);
             
-            if(empty($sameTermin))
+            $sameTermin = $menager->getRepository(BusyAppointments::class)->findBy(['ground' => $ground, 'date' => DateTime::createFromFormat($format, $date) ]);
+            //$sameTermin = $menager->getRepository(BusyAppointments::class)->findByInOfRange($startTime, $endTime, $fullDate, $ground);
+            $isExistTermin = false;
+
+            foreach($sameTermin as $termin)
+            {
+                if(($startTime->format('H') <= $termin->getStartTime()->format('H') ||($startTime->format('H') == $termin->getStartTime()->format('H') && $startTime->format('M') <= $termin->getStartTime()->format('M'))) &&  
+                ($endTime->format('H') >= $termin->getEndTime()->format('H') ||($endTime->format('H') == $termin->getEndTime()->format('H') && $endTime->format('M') <= $termin->getEndTime()->format('M'))))
+                {
+                    $isExistTermin = true;
+                }
+            }
+
+            if($isExistTermin == false)
             {//mozemo da zakazemo termin
+                $howManyTermin = (($endTime->format('H') * 60 + $endTime->format('i')) - ($startTime->format('H') * 60 + $startTime->format('i'))) / 60;
+
                 $user = $menager->getRepository(User::class)->findOneBy(['email'=>$userName]);
-
-
-                $appointment = new BusyAppointments($user, $ground);
-                //$appointment->setTime(intval($date2['hourlyRate']));
                 $format = 'l, d.m.Y';
                 $date = DateTime::createFromFormat($format,$date2['dateSelect']);
-                $appointment->setDate($date);
-                $appointment->setStartTime($startTime);
-                $appointment->setEndTime($endTime);
-                $appointment->setFullName($date2['fullName']);
-                $appointment->setPhone($date2['phone']);
-    
-    
-                $managerBooking->add($appointment,true);
+
+                for($i = 0; $i < $howManyTermin; $i++ )
+                {
+                    $appointment = new BusyAppointments($user, $ground);
+                    $appointment->setDate($date);
+                    $appointment->setStartTime($startTime);
+                    $appointment->setEndTime($endTime);
+                    $appointment->setFullName($date2['fullName']);
+                    $appointment->setPhone($date2['phone']);
+        
+        
+                    $managerBooking->add($appointment,true);
+                    $startTime->modify('+1 hour');
+                    $endTime->modify('+1 hour');
+                }
                 $this->addFlash('success','Your appointment is booked');
             }
             else
@@ -323,14 +344,29 @@ class TabelViewController extends AbstractController
         ]);
     }
 
+
+    #[Route('/bookingMouseOver', name:'booking_mouse_over')]
+    public function bookingMouseOver(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+    
+        // Pristupanje podacima
+        $startTime = $data['startTime'];
+        $groundName = $data['groundName'];
+        $userEmail = $data['userEmail'];
+        $selectDate = $data['selectDate'];
+
+        dd($selectDate);
+    }
+
+
+   /* #[Route('/bookingMouseOver', name:'booking_mouse_over')]
+    public function bookingMouseOver(SessionInterface $session)
+    {
+        $startTime = $session->get('startTime');
+        //var_dump($startTime);
+
+        
+    }*/
 }
 
-/*
-'userName', TextType::class, 
-                'constraints' => 
-                    new NotNul([
-                        'message' => 'Please enter username!'
-                    ]
-                
-            
-*/

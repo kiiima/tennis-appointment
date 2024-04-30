@@ -1,0 +1,79 @@
+<style>
+  .modal
+  {
+    transform: translate(-50%, -50%);
+  }
+
+</style>
+
+<div class="mb-20 flex flex-row">
+
+  {{ include('tabel_view/selectSection.html.twig', {form:formSelect}) }}
+  {% set groundCount = grounds|length + 1 %}
+
+  {{ include('tabel_view/tabelForTermins.html.twig',{selectDate:selectDate,start_time:start_time, end_time:end_time,grounds:grounds, appointments: appointments, adminEmail:adminEmail}) }}
+
+  {{ include('tabel_view/bookingTerminModel.html.twig',{formBooking:formBooking}) }}
+
+</div>
+
+<script>
+  var hourlyRateInput = document.getElementById('.js-time');
+  var optionsStart = hourlyRateEndInput.options;
+  var hourlyRateEndInput = document.getElementById('.js-time-end');
+  var optionsEnd = hourlyRateEndInput.options;
+
+  optionsStart.forEach((option)=>{
+    option.addEventListener('click',()=>{
+      hourlyRateInput.value = option.value;
+    })
+  });
+
+  optionsEnd.forEach((option)=>{
+    option.addEventListener('click',()=>{
+      hourlyRateEndInput.value = option.value;
+    })
+  });
+
+  hourlyRateInput.addEventListener('click', function() {
+      var selectedValue = this.value;
+      console.log(this.value);
+      // Set the selected value as the main value
+      document.getElementById('mainValue').value = selectedValue;
+  });
+
+  hourlyRateEndInput.addEventListener('click', function() {
+      var selectedValue = this.value;
+      console.log(this.value);
+      // Set the selected value as the main value
+      document.getElementById('mainValue').value = selectedValue;
+  });
+
+
+function openPopUp(i,endI,groundName,username,selectDate,adminEmail, userEmail) {
+  document.querySelector('.js-time').value = i;
+  document.querySelector('.js-time-end').value = endI;
+  document.querySelector('.js-ground').value = groundName;
+
+  $fieldUsername = document.querySelector('.js-username');
+  
+  $fieldUsername.value = adminEmail == userEmail ? '' : username;
+  
+  if(adminEmail != userEmail)
+  {
+    $fieldUsername.setAttribute('readonly','readonly');
+  }
+  
+
+  document.querySelector('.js-date').value = selectDate;
+
+  var modal =document.getElementById("modal").style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+}
+
+function closePopUp() {
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
+}
+
+</script>

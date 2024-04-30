@@ -1,0 +1,23 @@
+{% if is_granted('ROLE_ADMIN') %}
+
+  <button class="p-2 w-full h-full bg-lime-300 text-amber-950 flex justify-center ">
+    <small>
+      <div>
+        {{appoint.user.email}}
+      </div>
+      <div class="flex flex-row">
+        Name:
+        {{appoint.fullName}}
+      </div>
+      <div class="flex flex-row">
+        Phone:
+        {{appoint.phone}}
+      </div>
+    </small>
+  </button>
+
+{% else %}
+    <button class="p-2 w-full h-full disabled relative {{app.user == appoint.user ? 'bg-amber-200 text-amber-950' : 'bg-lime-300 text-lime-300' }}">
+      my appointment
+    </button>
+{% endif %}
