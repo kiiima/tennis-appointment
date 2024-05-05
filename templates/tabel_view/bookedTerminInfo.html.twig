@@ -1,8 +1,9 @@
 {% if is_granted('ROLE_ADMIN') %}
 
-  <button class="p-2 w-full h-full bg-lime-300 text-amber-950 flex justify-center ">
-    <small>
-      <div>
+  <button class="p-2 w-full h-full bg-lime-300 text-amber-950 flex flex-row">
+    <small class="flex flex-col justify-center w-5/6">
+      <div class="flex flex-row">
+        Email:
         {{appoint.user.email}}
       </div>
       <div class="flex flex-row">
@@ -14,10 +15,25 @@
         {{appoint.phone}}
       </div>
     </small>
+
+
+    <a class="w-1/6 hover:bg-lime-400 hover:rounded-md"
+    href="{{ path('app_appointment_delete' ,{idAppointment:appoint.id}) }}"
+    > 
+      &times;
+    </a>
+
   </button>
 
 {% else %}
-    <button class="p-2 w-full h-full disabled relative {{app.user == appoint.user ? 'bg-amber-200 text-amber-950' : 'bg-lime-300 text-lime-300' }}">
-      my appointment
+    <button class="p-2 w-full h-full flex flex-row {{app.user == appoint.user ? 'bg-amber-200 text-amber-950 relative' : 'bg-lime-300 text-lime-300 disabled' }}">
+      <div class="w-5/6">
+        my appointment
+      </div>
+      <a class="w-1/6 hover:bg-amber-300 hover:rounded-md"
+      href="{{ path('app_appointment_delete' ,{idAppointment:appoint.id}) }}"
+      > 
+        &times;
+      </a>
     </button>
 {% endif %}

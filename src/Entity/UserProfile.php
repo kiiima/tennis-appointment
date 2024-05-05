@@ -24,11 +24,18 @@ class UserProfile //user personal informations
     private ?string $lastName = null;
 
     #[Assert\NotBlank( message: "Phone field shouldn't be empty!")]
+    #[Assert\Length(
+        min : 3,
+        minMessage : 'Phone must have minimum 3 number!',
+        max : 10,
+        maxMessage : 'Phone must have maximum 10 number!'
+    )]
     #[ORM\Column(nullable: false)]
     private ?int $phone = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateOfBirth = null;
+
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)] //dodajemo ovo slabom entitetu u OneToOne i OneToMany

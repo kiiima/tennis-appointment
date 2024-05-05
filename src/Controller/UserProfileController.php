@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\UserProfile;
+use App\Form\LoginType;
 use App\Form\UserProfileType;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,6 @@ class UserProfileController extends AbstractController
         //reach profil, if not exists make one for current user
         $userProfile = $currentUser->getProfile() ?? new UserProfile(); 
 
-        
         $form = $this->createForm(
             //tip forme i gde pakujemo sve potrebne podatke
             UserProfileType::class, $userProfile
@@ -43,7 +43,7 @@ class UserProfileController extends AbstractController
             // add flash card
             $menager->add($currentUser,true);
             $this->addFlash(
-                'success',
+                'successChangeProfil',
                 'Your user profile setting were saved.'
             );
             //redirect 
@@ -51,7 +51,7 @@ class UserProfileController extends AbstractController
         }
 
         return $this->render('user_profile/index.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ]);
     }
 }

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ include('tabel_view/_header.html.twig',{currUser:app.user}) }}
+    {{ include('_header.html.twig',{currUser:app.user}) }}
 
 
     <div class="flex justify-center item-center">
@@ -9,14 +9,16 @@
         <div class="flex flex-col w-1/2 bg-lime-300 p-6 shadow-xl shadow-grey-500/50 rounded-md">
             <div class="my-3 p-2">
                 <h1 class="text-2xl">Form Setting</h1>
-                {% for message in app.flashes('success') %}
+                {% for message in app.flashes('successChangeProfil') %}
                     <div class="itali text-sm border border-2 border-amber-700 p-2 bg-amber-200 opacity-60 rounded-md mt-3 text-amber-950">
                         {{message}}
                     </div>
                 {% endfor %}
             </div>
-            {{ form_start(form ,{'attr': {'class': 'p-2 flex flex-col justify-center' } }) }}
-                {{form_errors(form,{'attr': {'class' : 'text-sm text-amber-950 w-4/5' } })}}
+            {{ form_start(form ,{'attr': { 'class': 'p-2 flex flex-col justify-center' } }) }}
+
+                <div class="flex flex-col mb-2">
+                </div>
 
                 <div class="flex flex-row mb-2">
                     <div class="flex flex-col w-1/2 mr-3">

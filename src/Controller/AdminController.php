@@ -10,6 +10,7 @@ use App\Entity\BusyAppointments;
 use App\Form\AddTennisGroundType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TennisGroundRepository;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,10 +34,12 @@ class AdminController extends AbstractController
         
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+        $today = new DateTime();
 
         //dohvatamo difoltnu smenu i sve terene
         $shift = $manager->getRepository(WorkingTime::class)->findOneBy(['defaultTime' => true]);
         $grounds =$manager->getRepository(TennisGround::class)->findBy(['isDelete' => false]);
+        $todayAppointments = $manager->getRepository(BusyAppointments::class)->findBy(['date' => $today , 'isDelete' => false]);
 
         $form1 = $this->createForm(WorkingTimeType::class, $shift);
         
@@ -127,7 +130,8 @@ class AdminController extends AbstractController
             'grounds' => $grounds,
             'addGroundForm' => $form2,
             'users' => $users,
-            'adminEmail' => $adminEmail
+            'adminEmail' => $adminEmail,
+            'todayAppointments' => $todayAppointments
         ]);
     }
 
@@ -162,7 +166,7 @@ class AdminController extends AbstractController
 
     /** @param String idGround */
     #[Route('/admin/blockedGround/{idGround}', name:'app_blocked_ground')]
-    public function BlockedGround($idGround, EntityManagerInterface $manager): Response
+    public function blockedGround($idGround, EntityManagerInterface $manager): Response
     {
         $id = intval($idGround);
         
@@ -170,17 +174,30 @@ class AdminController extends AbstractController
         $ground = $manager->getRepository(TennisGround::class)->findOneBy(['id'=> $id]);   
         if($ground->isBlocked())
         {
+
+            //blokirati teren
             $ground->setBlocked(false);
             $manager->persist($ground);
             $manager->flush();
-            $this->addFlash('blockedGround', 'You are blocked ground!');
+            $this->addFlash('unblockedGround', 'You are unblocked ground!');
         }
         else
         {
+
+            //obrisati sve termine tog terena
+            $deleteAppointments = $manager->getRepository(BusyAppointments::class)->findBy(['ground' => $ground]);
+            foreach($deleteAppointments as $appointment)
+            {
+                $appointment->setDelete(true);
+                $manager->persist($appointment);
+            }
+    
+            $manager->flush();
+
             $ground->setBlocked(true);
             $manager->persist($ground);
             $manager->flush();
-            $this->addFlash('unblockedGround', 'You are unblocked ground!');
+            $this->addFlash('blockedGround', 'You are blocked ground!');
         }
 
 

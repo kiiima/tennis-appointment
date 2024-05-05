@@ -4,7 +4,7 @@
 {% block body %}
     <!--ispis nasih obrisanih termina i brisanje terena za taj termin ako je delete-->
     <div class="mb-3 w-1/2 ml-3">
-        {% for messages in app.flashes(['deleteMyAppointment', 'bookingTermin']) %}
+        {% for messages in app.flashes(['deleteMyAppointment', 'bookingTermin','successBooking','noValidForm']) %}
             {% for message in messages %}
                 <div class="bg-orange-200 border-3 border-orange-500 rounded-md p-3">
                     {{message}}
